@@ -32,8 +32,8 @@ Please provide:
 
 I'll analyze this information and work with you to create a comprehensive plan.
 
-Tip: You can also invoke this command with an issue file directly: `/create_plan thoughts/shared/issues/gh-123.md`
-For deeper analysis, try: `/create_plan think deeply about thoughts/shared/issues/gh-123.md`
+Tip: You can also invoke this command with an issue file directly: `/create_plan thoughts/alice/issues/gh-123.md`
+For deeper analysis, try: `/create_plan think deeply about thoughts/alice/issues/gh-123.md`
 ```
 
 Then wait for the user's input.
@@ -437,7 +437,7 @@ tasks = [
 User: /create_plan
 Assistant: I'll help you create a detailed implementation plan...
 
-User: We need to add parent-child tracking for Claude sub-tasks. See thoughts/shared/issues/gh-123.md
+User: We need to add parent-child tracking for Claude sub-tasks. See thoughts/alice/issues/gh-123.md
 Assistant: Let me read that issue file completely first...
 
 [Reads file fully]
