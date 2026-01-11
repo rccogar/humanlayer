@@ -5,6 +5,11 @@ model: opus
 
 # Implementation Plan
 
+## Prerequisites
+
+This command writes plans to `thoughts/shared/plans/`. Before proceeding, verify the thoughts directory exists:
+- If `thoughts/` directory doesn't exist or symlinks are broken, inform the user: "The thoughts directory is not set up. Please run `/thoughts_setup` first."
+
 You are tasked with creating detailed implementation plans through an interactive, iterative process. You should be skeptical, thorough, and work collaboratively with the user to produce high-quality technical specifications.
 
 ## Initial Response
@@ -27,8 +32,8 @@ Please provide:
 
 I'll analyze this information and work with you to create a comprehensive plan.
 
-Tip: You can also invoke this command with a ticket file directly: `/create_plan thoughts/shared/tickets/eng_1234.md`
-For deeper analysis, try: `/create_plan think deeply about thoughts/shared/tickets/eng_1234.md`
+Tip: You can also invoke this command with an issue file directly: `/create_plan thoughts/shared/issues/gh-123.md`
+For deeper analysis, try: `/create_plan think deeply about thoughts/shared/issues/gh-123.md`
 ```
 
 Then wait for the user's input.
@@ -38,7 +43,7 @@ Then wait for the user's input.
 ### Step 1: Context Gathering & Initial Analysis
 
 1. **Read all mentioned files immediately and FULLY**:
-   - Ticket files (e.g., `thoughts/shared/tickets/eng_1234.md`)
+   - Issue files (e.g., `thoughts/shared/issues/gh-123.md`)
    - Research documents
    - Related implementation plans
    - Any JSON/data files mentioned
@@ -49,13 +54,12 @@ Then wait for the user's input.
 2. **Spawn initial research tasks to gather context**:
    Before asking the user any questions, use specialized agents to research in parallel:
 
-   - Use the **codebase-locator** agent to find all files related to the ticket/task
+   - Use the **codebase-locator** agent to find all files related to the task
    - Use the **codebase-analyzer** agent to understand how the current implementation works
-   - If a Linear ticket is mentioned, use the **linear-ticket-reader** agent to get full details
 
    These agents will:
    - Find relevant source files, configs, and tests
-   - Identify the specific directories to focus on (e.g., if WUI is mentioned, they'll focus on humanlayer-wui/)
+   - Identify the specific directories to focus on based on the component mentioned
    - Trace data flow and key functions
    - Return detailed explanations with file:line references
 
@@ -108,8 +112,9 @@ After getting initial clarifications:
    - **codebase-analyzer** - To understand implementation details (e.g., "analyze how [system] works")
    - **codebase-pattern-finder** - To find similar features we can model after
 
-   **For related tickets:**
-   - **linear-searcher** - To find similar issues or past implementations
+   **For related GitHub issues:**
+   - Search with `gh issue list --search "keywords"` to find similar issues
+   - View issue details with `gh issue view 123 --json title,body,comments,labels`
 
    Each agent knows how to:
    - Find the right files and code patterns
@@ -164,14 +169,14 @@ Once aligned on approach:
 
 After structure approval:
 
-1. **Write the plan** to `thoughts/shared/plans/YYYY-MM-DD-ENG-XXXX-description.md`
-   - Format: `YYYY-MM-DD-ENG-XXXX-description.md` where:
+1. **Write the plan** to `thoughts/shared/plans/YYYY-MM-DD-GH-XXX-description.md`
+   - Format: `YYYY-MM-DD-GH-XXX-description.md` where:
      - YYYY-MM-DD is today's date
-     - ENG-XXXX is the ticket number (omit if no ticket)
+     - GH-XXX is the GitHub issue number (omit if no issue)
      - description is a brief kebab-case description
    - Examples:
-     - With ticket: `2025-01-08-ENG-1478-parent-child-tracking.md`
-     - Without ticket: `2025-01-08-improve-error-handling.md`
+     - With issue: `2025-01-08-GH-123-parent-child-tracking.md`
+     - Without issue: `2025-01-08-improve-error-handling.md`
 2. **Use this template structure**:
 
 ````markdown
@@ -266,7 +271,7 @@ After structure approval:
 
 ## References
 
-- Original ticket: `thoughts/shared/tickets/eng_XXXX.md`
+- Original issue: `thoughts/shared/issues/gh-XXX.md` or GitHub issue #XXX
 - Related research: `thoughts/shared/research/[relevant].md`
 - Similar implementation: `[file:line]`
 ````
@@ -276,7 +281,7 @@ After structure approval:
 1. **Present the draft plan location**:
    ```
    I've created the initial implementation plan at:
-   `thoughts/shared/plans/YYYY-MM-DD-ENG-XXXX-description.md`
+   `thoughts/shared/plans/YYYY-MM-DD-GH-XXX-description.md`
 
    Please review it and let me know:
    - Are the phases properly scoped?
@@ -312,7 +317,7 @@ After structure approval:
    - Research actual code patterns using parallel sub-tasks
    - Include specific file paths and line numbers
    - Write measurable success criteria with clear automated vs manual distinction
-   - automated steps should use `make` whenever possible - for example `make -C humanlayer-wui check` instead of `cd humanlayer-wui && bun run fmt`
+   - automated steps should use `make` whenever possible - for example `make -C subproject check` instead of `cd subproject && npm run fmt`
 
 4. **Be Practical**:
    - Focus on incremental, testable changes
@@ -399,9 +404,8 @@ When spawning research sub-tasks:
    - What information to extract
    - Expected output format
 4. **Be EXTREMELY specific about directories**:
-   - If the ticket mentions "WUI", specify `humanlayer-wui/` directory
-   - If it mentions "daemon", specify `hld/` directory
-   - Never use generic terms like "UI" when you mean "WUI"
+   - If the issue mentions a specific component, specify its exact directory path
+   - Never use generic terms when you can be specific
    - Include the full path context in your prompts
 5. **Specify read-only tools** to use
 6. **Request specific file:line references** in responses
@@ -428,8 +432,8 @@ tasks = [
 User: /create_plan
 Assistant: I'll help you create a detailed implementation plan...
 
-User: We need to add parent-child tracking for Claude sub-tasks. See thoughts/shared/tickets/eng_1478.md
-Assistant: Let me read that ticket file completely first...
+User: We need to add parent-child tracking for Claude sub-tasks. See thoughts/shared/issues/gh-123.md
+Assistant: Let me read that issue file completely first...
 
 [Reads file fully]
 

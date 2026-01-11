@@ -7,6 +7,11 @@ model: opus
 
 You are tasked with updating existing implementation plans based on user feedback. You should be skeptical, thorough, and ensure changes are grounded in actual codebase reality.
 
+## Prerequisites
+
+This command reads/writes plans in `thoughts/shared/plans/`. Before proceeding, verify the thoughts directory exists:
+- If `thoughts/` directory doesn't exist or symlinks are broken, inform the user: "The thoughts directory is not set up. Please run `/thoughts_setup` first."
+
 ## Initial Response
 
 When this command is invoked:
@@ -78,8 +83,8 @@ If the user's feedback requires understanding new code patterns or validating as
    - **thoughts-analyzer** - To extract insights from documents
 
    **Be EXTREMELY specific about directories**:
-   - If the change involves "WUI", specify `humanlayer-wui/` directory
-   - If it involves "daemon", specify `hld/` directory
+   - If the change involves a specific component, specify its exact directory path
+   - Never use generic terms when you can be specific
    - Include full path context in prompts
 
 3. **Read any new files identified by research**:
@@ -130,13 +135,9 @@ Get user confirmation before proceeding.
    - Use `make` commands for automated verification
    - Keep language clear and actionable
 
-### Step 5: Sync and Review
+### Step 5: Review
 
-1. **Sync the updated plan**:
-   - Run `humanlayer thoughts sync`
-   - This ensures changes are properly indexed
-
-2. **Present the changes made**:
+1. **Present the changes made**:
    ```
    I've updated the plan at `thoughts/shared/plans/[filename].md`
 
@@ -196,7 +197,7 @@ When updating success criteria, always maintain the two-category structure:
 
 1. **Automated Verification** (can be run by execution agents):
    - Commands that can be run: `make test`, `npm run lint`, etc.
-   - Prefer `make` commands: `make -C humanlayer-wui check` instead of `cd humanlayer-wui && bun run fmt`
+   - Prefer `make` commands: `make -C subproject check` instead of `cd subproject && npm run fmt`
    - Specific files that should exist
    - Code compilation/type checking
 

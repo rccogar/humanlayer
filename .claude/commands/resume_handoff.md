@@ -6,6 +6,11 @@ description: Resume work from handoff document with context analysis and validat
 
 You are tasked with resuming work from a handoff document through an interactive process. These handoffs contain critical context, learnings, and next steps from previous work sessions that need to be understood and continued.
 
+## Prerequisites
+
+This command reads from `thoughts/shared/handoffs/`. Before proceeding, verify the thoughts directory exists:
+- If `thoughts/` directory doesn't exist or symlinks are broken, inform the user: "The thoughts directory is not set up. Please run `/thoughts_setup` first."
+
 ## Initial Response
 
 When this command is invoked:
@@ -17,9 +22,8 @@ When this command is invoked:
    - Begin the analysis process by ingesting relevant context from the handoff document, reading additional files it mentions
    - Then propose a course of action to the user and confirm, or ask for clarification on direction.
 
-2. **If a ticket number (like ENG-XXXX) was provided**:
-   - run `humanlayer thoughts sync` to ensure your `thoughts/` directory is up to date.
-   - locate the most recent handoff document for the ticket. Tickets will be located in `thoughts/shared/handoffs/ENG-XXXX` where `ENG-XXXX` is the ticket number. e.g. for `ENG-2124` the handoffs would be in `thoughts/shared/handoffs/ENG-2124/`. **List this directory's contents.**
+2. **If a GitHub issue number (like GH-XXX) was provided**:
+   - locate the most recent handoff document for the issue. Handoffs will be located in `thoughts/shared/handoffs/GH-XXX` where `GH-XXX` is the GitHub issue number. e.g. for `GH-123` the handoffs would be in `thoughts/shared/handoffs/GH-123/`. **List this directory's contents.**
    - There may be zero, one or multiple files in the directory.
    - **If there are zero files in the directory, or the directory does not exist**: tell the user: "I'm sorry, I can't seem to find that handoff document. Can you please provide me with a path to it?"
    - **If there is only one file in the directory**: proceed with that handoff
@@ -35,9 +39,9 @@ I'll help you resume work from a handoff document. Let me find the available han
 
 Which handoff would you like to resume from?
 
-Tip: You can invoke this command directly with a handoff path: `/resume_handoff `thoughts/shared/handoffs/ENG-XXXX/YYYY-MM-DD_HH-MM-SS_ENG-XXXX_description.md`
+Tip: You can invoke this command directly with a handoff path: `/resume_handoff thoughts/shared/handoffs/GH-XXX/YYYY-MM-DD_HH-MM-SS_GH-XXX_description.md`
 
-or using a ticket number to resume from the most recent handoff for that ticket: `/resume_handoff ENG-XXXX`
+or using a GitHub issue number to resume from the most recent handoff for that issue: `/resume_handoff GH-XXX`
 ```
 
 Then wait for the user's input.

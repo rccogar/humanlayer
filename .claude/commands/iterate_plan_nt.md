@@ -5,6 +5,11 @@ model: opus
 
 # Iterate Implementation Plan
 
+## Prerequisites
+
+This command reads/writes plans in `thoughts/shared/plans/`. Before proceeding, verify the thoughts directory exists:
+- If `thoughts/` directory doesn't exist or symlinks are broken, inform the user: "The thoughts directory is not set up. Please run `/thoughts_setup` first."
+
 You are tasked with updating existing implementation plans based on user feedback. You should be skeptical, thorough, and ensure changes are grounded in actual codebase reality.
 
 ## Initial Response

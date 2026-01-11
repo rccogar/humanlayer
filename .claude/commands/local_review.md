@@ -4,7 +4,7 @@ description: Set up worktree for reviewing colleague's branch
 
 # Local Review
 
-You are tasked with setting up a local review environment for a colleague's branch. This involves creating a worktree, setting up dependencies, and launching a new Claude Code session.
+You are tasked with setting up a local review environment for a colleague's branch. This involves creating a worktree, setting up dependencies, and preparing for review.
 
 ## Process
 
@@ -14,21 +14,25 @@ When invoked with a parameter like `gh_username:branchName`:
    - Extract GitHub username and branch name from the format `username:branchname`
    - If no parameter provided, ask for it in the format: `gh_username:branchName`
 
-2. **Extract ticket information**:
-   - Look for ticket numbers in the branch name (e.g., `eng-1696`, `ENG-1696`)
+2. **Extract issue information**:
+   - Look for issue numbers in the branch name (e.g., `gh-123`, `GH-123`, or just `123`)
    - Use this to create a short worktree directory name
-   - If no ticket found, use a sanitized version of the branch name
+   - If no issue found, use a sanitized version of the branch name
 
-3. **Set up the remote and worktree**:
+3. **Determine repository info**:
+   - Get the current repo name: `basename $(git rev-parse --show-toplevel)`
+   - Get the repo owner: `gh repo view --json owner -q .owner.login`
+
+4. **Set up the remote and worktree**:
    - Check if the remote already exists using `git remote -v`
-   - If not, add it: `git remote add USERNAME git@github.com:USERNAME/humanlayer`
+   - If not, add it: `git remote add USERNAME git@github.com:USERNAME/REPO_NAME`
    - Fetch from the remote: `git fetch USERNAME`
-   - Create worktree: `git worktree add -b BRANCHNAME ~/wt/humanlayer/SHORT_NAME USERNAME/BRANCHNAME`
+   - Create worktree: `git worktree add -b BRANCHNAME ~/wt/REPO_NAME/SHORT_NAME USERNAME/BRANCHNAME`
 
-4. **Configure the worktree**:
-   - Copy Claude settings: `cp .claude/settings.local.json WORKTREE/.claude/`
-   - Run setup: `make -C WORKTREE setup`
-   - Initialize thoughts: `cd WORKTREE && humanlayer thoughts init --directory humanlayer`
+5. **Configure the worktree**:
+   - Copy Claude settings if they exist: `cp .claude/settings.local.json WORKTREE/.claude/` (if file exists)
+   - Run setup if Makefile exists: `make -C WORKTREE setup`
+   - Initialize thoughts symlink if using thoughts convention: `ln -s ~/thoughts WORKTREE/thoughts`
 
 ## Error Handling
 
@@ -39,10 +43,10 @@ When invoked with a parameter like `gh_username:branchName`:
 ## Example Usage
 
 ```
-/local_review samdickson22:sam/eng-1696-hotkey-for-yolo-mode
+/local_review colleague:feature/gh-123-new-feature
 ```
 
 This will:
-- Add 'samdickson22' as a remote
-- Create worktree at `~/wt/humanlayer/eng-1696`
+- Add 'colleague' as a remote (if not already present)
+- Create worktree at `~/wt/{repo-name}/gh-123`
 - Set up the environment
